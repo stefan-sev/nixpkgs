@@ -13,7 +13,7 @@ let
   idmapdConfFile = pkgs.writeText "idmapd.conf" ''
     [General]
     Pipefs-Directory = ${rpcMountpoint}
-    ${optionalString (config.networking.domain != "")
+    ${optionalString (config.networking.domain != null)
       "Domain = ${config.networking.domain}"}
 
     [Mapping]
@@ -54,11 +54,15 @@ in
 
   ###### implementation
 
-  config = mkIf (any (fs: fs == "nfs" || fs == "nfs4") config.boot.supportedFilesystems) ({
+  config = mkIf (any (fs: fs == "nfs" || fs == "nfs4") config.boot.supportedFilesystems) {
 
     services.rpcbind.enable = true;
 
-    system.fsPackages = [ pkgs.nfsUtils ];
+    system.fsPackages = [ pkgs.nfs-utils ];
+
+    boot.extraModprobeConfig = mkIf (cfg.lockdPort != null) ''
+      options lockd nlm_udpport=${toString cfg.lockdPort} nlm_tcpport=${toString cfg.lockdPort}
+    '';
 
     boot.kernelModules = [ "sunrpc" ];
 
@@ -67,12 +71,12 @@ in
     systemd.services.statd =
       { description = "NFSv3 Network Status Monitor";
 
-        path = [ pkgs.nfsUtils pkgs.sysvtools pkgs.utillinux ];
+        path = [ pkgs.nfs-utils pkgs.sysvtools pkgs.utillinux ];
 
-        wantedBy = [ "network-online.target" "multi-user.target" ];
-        before = [ "network-online.target" ];
+        wantedBy = [ "remote-fs-pre.target" ];
+        before = [ "remote-fs-pre.target" ];
         requires = [ "basic.target" "rpcbind.service" ];
-        after = [ "basic.target" "rpcbind.service" "network.target" ];
+        after = [ "basic.target" "rpcbind.service" ];
 
         unitConfig.DefaultDependencies = false; # don't stop during shutdown
 
@@ -85,7 +89,7 @@ in
 
         serviceConfig.Type = "forking";
         serviceConfig.ExecStart = ''
-          @${pkgs.nfsUtils}/sbin/rpc.statd rpc.statd --no-notify \
+          @${pkgs.nfs-utils}/sbin/rpc.statd rpc.statd --no-notify \
               ${if cfg.statdPort != null then "-p ${toString statdPort}" else ""}
         '';
         serviceConfig.Restart = "always";
@@ -96,8 +100,8 @@ in
 
         path = [ pkgs.sysvtools pkgs.utillinux ];
 
-        wantedBy = [ "network-online.target" "multi-user.target" ];
-        before = [ "network-online.target" ];
+        wantedBy = [ "remote-fs-pre.target" ];
+        before = [ "remote-fs-pre.target" ];
         requires = [ "rpcbind.service" ];
         after = [ "rpcbind.service" ];
 
@@ -113,13 +117,9 @@ in
           '';
 
         serviceConfig.Type = "forking";
-        serviceConfig.ExecStart = "@${pkgs.nfsUtils}/sbin/rpc.idmapd rpc.idmapd -c ${idmapdConfFile}";
+        serviceConfig.ExecStart = "@${pkgs.nfs-utils}/sbin/rpc.idmapd rpc.idmapd -c ${idmapdConfFile}";
         serviceConfig.Restart = "always";
       };
 
-  } // mkIf (cfg.lockdPort != null) {
-    boot.extraModprobeConfig = ''
-      options lockd nlm_udpport=${toString cfg.lockdPort} nlm_tcpport=${toString cfg.lockdPort}
-    '';
-  });
+  };
 }

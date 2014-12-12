@@ -2,20 +2,21 @@
 
 { cabal, active, colour, dataDefaultClass, diagramsCore, dualTree
 , filepath, fingertree, hashable, intervals, JuicyPixels, lens
-, MemoTrie, monoidExtras, optparseApplicative, safe, semigroups
-, tagged, vectorSpace, vectorSpacePoints
+, MemoTrie, monoidExtras, optparseApplicative, semigroups, tagged
+, vectorSpace, vectorSpacePoints
 }:
 
 cabal.mkDerivation (self: {
   pname = "diagrams-lib";
-  version = "1.2.0.2";
-  sha256 = "0ylrsldq7nmqvprgwbw7bkwp31zhgbyxjx462lcayk0lbhqb5k5p";
+  version = "1.2.0.5";
+  sha256 = "0km2j74riybmlhpb3jp4i3xilz4q2ngkifnsq6bsk8d0m3kqizd6";
   buildDepends = [
     active colour dataDefaultClass diagramsCore dualTree filepath
     fingertree hashable intervals JuicyPixels lens MemoTrie
-    monoidExtras optparseApplicative safe semigroups tagged vectorSpace
+    monoidExtras optparseApplicative semigroups tagged vectorSpace
     vectorSpacePoints
   ];
+  jailbreak = true;
   meta = {
     homepage = "http://projects.haskell.org/diagrams";
     description = "Embedded domain-specific language for declarative graphics";

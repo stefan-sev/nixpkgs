@@ -6,8 +6,8 @@
 
 cabal.mkDerivation (self: {
   pname = "hplayground";
-  version = "0.1.0.4";
-  sha256 = "12xqj7f9vqj2zsv3ipfmpkdnqagh2g0x4i4jsj98q91ynwhzg1am";
+  version = "0.1.1.0";
+  sha256 = "03ya82lxhv7acakhl01835p3wvwr3z14jiww7wvj4bzlib8qsi8b";
   buildDepends = [
     dataDefault hasteCompiler hastePerch monadsTf transformers
   ];
@@ -17,5 +17,6 @@ cabal.mkDerivation (self: {
     license = self.stdenv.lib.licenses.bsd3;
     platforms = self.ghc.meta.platforms;
     maintainers = with self.stdenv.lib.maintainers; [ tomberek ];
+    broken = true;
   };
 })

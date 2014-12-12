@@ -1,33 +1,39 @@
-{ stdenv, fetchgit, nodejs, which, python27 }:
+{ stdenv, fetchFromGitHub, nodejs, which, python27, utillinux }:
 
 let
-  date = "20140829";
-  rev = "9595d67f9edd759054c5bd3aaee0968ff55e361a";
+  version = "12"; # see ${src}/util/version/Version.h
+  date = "20141121";
 in
 stdenv.mkDerivation {
-  name = "cjdns-${date}-${stdenv.lib.strings.substring 0 7 rev}";
+  name = "cjdns-${version}-${date}";
 
-  src = fetchgit {
-    url = "https://github.com/cjdelisle/cjdns.git";
-    inherit rev;
-    sha256 = "519c549c42ae26c5359ae13a4548c44b51e36db403964b4d9f78c19b749dfb83";
+  src = fetchFromGitHub {
+    owner = "cjdelisle";
+    repo = "cjdns";
+    rev = "f176d2c0271d764412bd13c7adf7ea475fa25e0f";
+    sha256 = "02vp917pr0kkcg41ani2azfbmdv1rjghmlrc7nc07ckkcqg6sk0y";
   };
 
-  buildInputs = [ which python27 nodejs];
-
-  patches = [ ./makekey.patch ];
+  buildInputs = [ which python27 nodejs ] ++
+    # for flock
+    stdenv.lib.optional stdenv.isLinux [ utillinux ];
 
   buildPhase = "bash do";
   installPhase = ''
-    mkdir -p $out/sbin
-    cp cjdroute makekey $out/sbin
+    installBin cjdroute makekeys privatetopublic publictoip6
+    sed -i 's,/usr/bin/env node,'$(type -P node), \
+      $(find contrib -name "*.js")
+    sed -i 's,/usr/bin/env python,'$(type -P python), \
+      $(find contrib -type f)
+    mkdir -p $out/share/cjdns
+    cp -R contrib node_build node_modules $out/share/cjdns/
   '';
 
-  meta = {
+  meta = with stdenv.lib; {
     homepage = https://github.com/cjdelisle/cjdns;
     description = "Encrypted networking for regular people";
-    license = stdenv.lib.licenses.gpl3;
-    maintainers = with stdenv.lib.maintainers; [ viric emery ];
-    platforms = stdenv.lib.platforms.linux;
+    license = licenses.gpl3;
+    maintainers = with maintainers; [ viric emery ];
+    platforms = platforms.unix;
   };
 }

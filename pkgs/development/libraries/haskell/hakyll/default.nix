@@ -2,34 +2,33 @@
 
 { cabal, binary, blazeHtml, blazeMarkup, cmdargs, cryptohash
 , dataDefault, deepseq, filepath, fsnotify, httpConduit, httpTypes
-, HUnit, lrucache, mtl, network, pandoc, pandocCiteproc, parsec
-, QuickCheck, random, regexBase, regexTdfa, snapCore, snapServer
-, systemFilepath, tagsoup, testFramework, testFrameworkHunit
-, testFrameworkQuickcheck2, text, time, utillinux
+, HUnit, lrucache, mtl, network, networkUri, pandoc, pandocCiteproc
+, parsec, QuickCheck, random, regexBase, regexTdfa, snapCore
+, snapServer, systemFilepath, tagsoup, testFramework
+, testFrameworkHunit, testFrameworkQuickcheck2, text, time
+, utillinux
 }:
 
 cabal.mkDerivation (self: {
   pname = "hakyll";
-  version = "4.5.4.0";
-  sha256 = "16srkm2fxjw1xg7zaikn49zz4xsz9awddnjm6ibv522k3xf3l24c";
+  version = "4.6.1.0";
+  sha256 = "19yw5yp84vli228zmyz23vs6d5mb14rjbb81kvyra8fi8mmy2l6b";
   isLibrary = true;
   isExecutable = true;
   buildDepends = [
     binary blazeHtml blazeMarkup cmdargs cryptohash dataDefault deepseq
-    filepath fsnotify httpConduit httpTypes lrucache mtl network pandoc
-    pandocCiteproc parsec random regexBase regexTdfa snapCore
-    snapServer systemFilepath tagsoup text time
+    filepath fsnotify httpConduit httpTypes lrucache mtl network
+    networkUri pandoc pandocCiteproc parsec random regexBase regexTdfa
+    snapCore snapServer systemFilepath tagsoup text time
   ];
   testDepends = [
     binary blazeHtml blazeMarkup cmdargs cryptohash dataDefault deepseq
     filepath fsnotify httpConduit httpTypes HUnit lrucache mtl network
-    pandoc pandocCiteproc parsec QuickCheck random regexBase regexTdfa
-    snapCore snapServer systemFilepath tagsoup testFramework
+    networkUri pandoc pandocCiteproc parsec QuickCheck random regexBase
+    regexTdfa snapCore snapServer systemFilepath tagsoup testFramework
     testFrameworkHunit testFrameworkQuickcheck2 text time utillinux
   ];
-  patchPhase = ''
-    sed -i -e 's|pandoc-citeproc .*,|pandoc-citeproc,|' hakyll.cabal
-  '';
+  jailbreak = true;
   meta = {
     homepage = "http://jaspervdj.be/hakyll";
     description = "A static website compiler library";

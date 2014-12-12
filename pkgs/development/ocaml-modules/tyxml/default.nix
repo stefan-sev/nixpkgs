@@ -1,29 +1,26 @@
-{stdenv, fetchurl, ocaml, findlib, ocaml_oasis}:
+{stdenv, fetchurl, ocaml, findlib, ocaml_oasis, camlp4, uutf}:
 
 stdenv.mkDerivation {
-  name = "tyxml-3.0.0";
+  name = "tyxml-3.3.0";
 
   src = fetchurl {
-    url = http://ocsigen.org/download/tyxml-3.0.0.tar.gz;
-    sha256 = "0cvbmyg4g0lg4f23032cjlxqklisccbjgj47117wm6gva8xi7xa3";
+    url = http://github.com/ocsigen/tyxml/archive/3.3.0.tar.gz;
+    sha256 = "0r1hj8qy91i48nd7wj0x2dqrgspqrry5awraxl4pl10vh0mn6pk7";
     };
 
-  buildInputs = [ocaml findlib ocaml_oasis];
+  buildInputs = [ocaml findlib ocaml_oasis camlp4];
+
+  propagatedBuildInputs = [uutf];
 
   createFindlibDestdir = true;
 
-  configurePhase = ''
-  make setup-dev.exe
-  ./setup-dev.exe -configure --prefix $out
-  '';
-
-  meta = {
+  meta = with stdenv.lib; {
     homepage = http://ocsigen.org/tyxml/;
     description = "A library that makes it almost impossible for your OCaml programs to generate wrong XML ouput, using static typing";
-    license = "LGPL";
+    license = licenses.lgpl21;
     platforms = ocaml.meta.platforms;
-    maintainers = [
-      stdenv.lib.maintainers.gal_bolle
+    maintainers = with maintainers; [
+      gal_bolle vbgl
       ];
   };
 

@@ -6,14 +6,15 @@
 
 cabal.mkDerivation (self: {
   pname = "hsimport";
-  version = "0.5.2";
-  sha256 = "00kzc7hiwsidwvjnbvc01yh6c8n135ypwsiyvcnf2g179pwmnzkc";
+  version = "0.6.4";
+  sha256 = "07v7sm98a0vzfk1xx8mf6l2ybf3rwx4ml2wxp1rlw5w1aapffsfw";
   isLibrary = true;
   isExecutable = true;
   buildDepends = [
     attoparsec cmdargs dyre haskellSrcExts lens mtl split text
   ];
   testDepends = [ filepath haskellSrcExts tasty tastyGolden ];
+  jailbreak = true;
   meta = {
     description = "A command line program for extending the import list of a Haskell source file";
     license = self.stdenv.lib.licenses.bsd3;

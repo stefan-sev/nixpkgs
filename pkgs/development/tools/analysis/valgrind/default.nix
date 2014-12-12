@@ -1,14 +1,12 @@
 { stdenv, fetchurl, perl, gdb }:
 
 stdenv.mkDerivation rec {
-  name = "valgrind-3.9.0";
+  name = "valgrind-3.10.1";
 
   src = fetchurl {
     url = "http://valgrind.org/downloads/${name}.tar.bz2";
-    sha256 = "1w6n5qvxy2ssbczcl1c2yd2ggjn3ipay2hvpn10laly2dfh73bz6";
+    sha256 = "15xrzhfnwwn7n1sfbkwvdbvs6zk0zx718n6zd5i1nrnvdp13s9gs";
   };
-
-  patches = [ ./glibc-2.19.patch ];
 
   # Perl is needed for `cg_annotate'.
   # GDB is needed to provide a sane default for `--db-command'.
@@ -38,6 +36,8 @@ stdenv.mkDerivation rec {
         --replace 'obj:/usr/X11R6/lib' 'obj:*/lib' \
         --replace 'obj:/usr/lib' 'obj:*/lib'
     done
+
+    paxmark m $out/lib/valgrind/*-*-linux
   '';
 
   meta = {

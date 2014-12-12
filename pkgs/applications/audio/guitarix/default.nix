@@ -4,16 +4,16 @@
 
 stdenv.mkDerivation rec {
   name = "guitarix-${version}";
-  version = "0.30.0";
+  version = "0.32.1";
 
   src = fetchurl {
     url = "mirror://sourceforge/guitarix/guitarix2-${version}.tar.bz2";
-    sha256 = "0fbapd1pcixzlqxgzb2s2q1c64g9z9lf4hz3vy73z55cnpk72vdx";
+    sha256 = "1sl7ca1lj0wchh3xq7qw3zqrbyyh4r8cwljb9i3yplpsn90d1i3k";
   };
 
   buildInputs = [
-    avahi boost eigen fftw gettext glib glibmm gtk gtkmm intltool jack2
-    ladspaH librdf libsndfile lilv lv2 pkgconfig python serd sord sratom
+    avahi boost eigen fftw gettext glib glibmm gtk gtkmm intltool
+    jack2 ladspaH librdf libsndfile lilv lv2 pkgconfig python serd sord sratom
   ];
 
   configurePhase = "python waf configure --prefix=$out";

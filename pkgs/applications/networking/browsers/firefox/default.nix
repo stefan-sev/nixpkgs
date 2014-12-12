@@ -15,14 +15,14 @@
 
 assert stdenv.gcc ? libc && stdenv.gcc.libc != null;
 
-let version = "32.0"; in
+let version = "34.0.5"; in
 
 stdenv.mkDerivation rec {
   name = "firefox-${version}";
 
   src = fetchurl {
     url = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${version}/source/firefox-${version}.source.tar.bz2";
-    sha1 = "5cb7644af9741ebcdb3a21b777362913908c8f41";
+    sha1 = "33654d38268d1d1f71105f48bbe97cf720f47be2";
   };
 
   buildInputs =
@@ -88,7 +88,7 @@ stdenv.mkDerivation rec {
   postInstall =
     ''
       # For grsecurity kernels
-      paxmark m $out/lib/*/{plugin-container,xulrunner}
+      paxmark m $out/lib/${name}/{firefox,firefox-bin,plugin-container}
 
       # Remove SDK cruft. FIXME: move to a separate output?
       rm -rf $out/share/idl $out/include $out/lib/firefox-devel-*
@@ -97,7 +97,7 @@ stdenv.mkDerivation rec {
   meta = {
     description = "Web browser";
     homepage = http://www.mozilla.com/en-US/firefox/;
-    maintainers = with lib.maintainers; [ eelco wizeman ];
+    maintainers = with lib.maintainers; [ eelco ];
     platforms = lib.platforms.linux;
   };
 

@@ -28,7 +28,7 @@ in
   nodes =
     { tracker =
         { config, pkgs, ... }:
-        { environment.systemPackages = [ pkgs.transmission ];
+        { environment.systemPackages = [ pkgs.transmission pkgs.opentracker ];
 
           # We need Apache on the tracker to serve the torrents.
           services.httpd.enable = true;
@@ -81,12 +81,12 @@ in
       # Create the torrent.
       $tracker->succeed("mkdir /tmp/data");
       $tracker->succeed("cp ${file} /tmp/data/test.tar.bz2");
-      $tracker->succeed("transmission-create /tmp/data/test.tar.bz2 -t http://${(pkgs.lib.head nodes.tracker.config.networking.interfaces.eth1.ip4).address}:6969/announce -o /tmp/test.torrent");
+      $tracker->succeed("transmission-create /tmp/data/test.tar.bz2 -p -t http://${(pkgs.lib.head nodes.tracker.config.networking.interfaces.eth1.ip4).address}:6969/announce -o /tmp/test.torrent");
       $tracker->succeed("chmod 644 /tmp/test.torrent");
 
       # Start the tracker.  !!! use a less crappy tracker
       $tracker->waitForUnit("network.target");
-      $tracker->succeed("bittorrent-tracker --port 6969 --dfile /tmp/dstate >&2 &");
+      $tracker->succeed("opentracker -p 6969 >&2 &");
       $tracker->waitForOpenPort(6969);
 
       # Start the initial seeder.

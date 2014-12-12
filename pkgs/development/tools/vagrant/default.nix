@@ -1,4 +1,4 @@
-{ stdenv, fetchurl, dpkg, curl, libarchive, openssl, ruby, rubyLibs, libiconv
+{ stdenv, fetchurl, dpkg, curl, libarchive, openssl, ruby, rubyLibs, libiconvOrLibc
 , libxml2, libxslt }:
 
 assert stdenv.system == "x86_64-linux" || stdenv.system == "i686-linux";
@@ -17,7 +17,7 @@ stdenv.mkDerivation rec {
     else
       fetchurl {
         url    = "https://dl.bintray.com/mitchellh/vagrant/vagrant_${version}_i686.deb";
-        sha256 = "047zij0lvrlpyg6icnp4knl0q87icsavbd2g98bkcp79yh2y91d0";
+        sha256 = "1d4w0ni6mkb378v6rd7b188fw38vi8qql7pkwzsykr6389krbkbq";
       };
 
   meta = with stdenv.lib; {
@@ -66,7 +66,7 @@ stdenv.mkDerivation rec {
 
     # libiconv: iconv
     rm opt/vagrant/embedded/bin/iconv
-    ln -s ${libiconv}/bin/iconv opt/vagrant/embedded/bin
+    ln -s ${libiconvOrLibc}/bin/iconv opt/vagrant/embedded/bin
 
     # libxml: xml2-config, xmlcatalog, xmllint
     rm opt/vagrant/embedded/bin/{xml2-config,xmlcatalog,xmllint}
